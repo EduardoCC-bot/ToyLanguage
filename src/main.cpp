@@ -6,7 +6,7 @@ int main(){
     Lexer lexer(code);
 
     std::vector<Token> tokens = lexer.scanTokens();
-
+    lexer.printTokens(tokens);
     std::cout << "Tokens scanned: " << tokens.size() << std::endl;
     return 0;
 

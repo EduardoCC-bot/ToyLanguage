@@ -7,6 +7,7 @@ public:
     Lexer(const std::string& source); 
     std::vector<Token> scanTokens();
     void addToken(std::vector<Token>& tokens, TokenType type, const std::string& value);
+    void printTokens(const std::vector<Token>& tokens) const;
 
 private:
     std::string source;
