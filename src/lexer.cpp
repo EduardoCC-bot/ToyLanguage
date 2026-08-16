@@ -1,4 +1,4 @@
-#include "../include/lexer.h"
+#include "../include/Lexer.h"
 #include <iostream>
 
 Lexer::Lexer(const std::string& source) : source(source){}
