@@ -43,17 +43,31 @@ Token Parser::consume(TokenType type, const std::string& message){
     throw std::runtime_error("Error sintactico en linea: " + message);
 }
 
-std::unique_ptr<ASTNode> Parser::expression(){
 
-    if (match(TokenType::INT_LITERAL)){
+std::unique_ptr<ASTNode> Parser::primary() {
+    if (match(TokenType::INT_LITERAL)) {
         int val = std::stoi(previous().value);
         return std::make_unique<LiteralNode>(val);
     }
 
-    if (match(TokenType::IDENTIFIER)){
+    if (match(TokenType::IDENTIFIER)) {
         return std::make_unique<VariableNode>(previous().value);
     }
-    throw std::runtime_error("Se esperaba una expresion en linea: " + std::to_string(peek().line));
+
+    throw std::runtime_error("Se esperaba un numero o variable.");
+}
+
+std::unique_ptr<ASTNode> Parser::expression(){
+    auto left = primary();
+
+    // Si le sigue un '+' o '-', creamos un nodo de operacion binaria
+    while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
+        std::string op = previous().value;
+        auto right = primary();
+        left = std::make_unique<BinaryOpNode>(op, std::move(left), std::move(right));
+    }
+
+    return left;
 }
 
 std::unique_ptr<ASTNode> Parser::statement(){
@@ -74,10 +88,16 @@ std::unique_ptr<ASTNode> Parser::statement(){
 
 }
 
-std::unique_ptr<ASTNode> Parser::parse(){
-    try{
-        return statement();
-    } catch (const std::exception& e){
+
+std::unique_ptr<ASTNode> Parser::parse() {
+    auto program = std::make_unique<ProgramNode>();
+
+    try {
+        while (!isAtEnd()) {
+            program->addStatement(statement());
+        }
+        return program;
+    } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return nullptr;
     }

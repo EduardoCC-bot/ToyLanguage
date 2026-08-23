@@ -22,7 +22,8 @@ private:
     Token consume(TokenType type, const std::string& message);
 
 
+
     std::unique_ptr<ASTNode> statement();
     std::unique_ptr<ASTNode> expression();
-    
+    std::unique_ptr<ASTNode> primary();
 };
