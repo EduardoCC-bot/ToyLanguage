@@ -19,6 +19,9 @@ bool Lexer::isAlpha(char c) const{
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
+
+
+
 void Lexer::printTokens(const std::vector<Token>& tokens) const {
     for (const auto& token : tokens) {
         std::cout << "Token: " << tokenTypeToString(token.type) 
@@ -42,7 +45,9 @@ std::vector<Token> Lexer::scanTokens(){
             case '-': addToken(tokens, TokenType::MINUS, "-"); break;
             case ';': addToken(tokens, TokenType::SEMICOLON, ";"); break;
             case '=': addToken(tokens, TokenType::ASSIGN, "="); break;
-            
+            case '{': addToken(tokens, TokenType::LBRACE, "{"); break;
+            case '}': addToken(tokens, TokenType::RBRACE, "}"); break;
+
             case ' ': 
             case '\r':
             case '\t':

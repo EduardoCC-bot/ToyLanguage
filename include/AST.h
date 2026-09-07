@@ -24,7 +24,7 @@ public:
         std::cout << padding << "LiteralNode: (" << value << ")\n";
     }
 
-    int eval(Environment& env) override {
+    int eval(Environment&) override {
         return value;
     }
 };
@@ -118,5 +118,35 @@ public:
         if (op == "-") return leftVal - rightVal;
 
         throw std::runtime_error("Operador desconocido: " + op);
+    }
+};
+
+
+class BlockNode : public ASTNode {
+public :
+    std::vector<std::unique_ptr<ASTNode>> statements;
+    
+    void addstatement(std::unique_ptr<ASTNode> stmt) {
+        statements.push_back(std::move(stmt));
+    }
+
+    void print(int indent = 0) const override {
+        std::string padding(indent * 4, ' ');
+        std::cout << padding << "BlockNode {\n";
+        for (const auto& stmt : statements) {
+            stmt->print(indent + 1);
+        }
+        std::cout << padding << "}\n";
+    }
+
+
+    int eval(Environment& env) override {
+        Environment blockEnv(&env);
+
+        int lastVal = 0;
+        for (const auto& stmt : statements) {
+            lastVal = stmt->eval(blockEnv);
+        }
+        return lastVal;
     }
 };

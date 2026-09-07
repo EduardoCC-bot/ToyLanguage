@@ -12,6 +12,8 @@ enum class  TokenType {
     EOF_TOKEN,
     WHILE_LOOP,
     FOR_LOOP,
+    LBRACE,
+    RBRACE
 };
 
 
@@ -33,6 +35,8 @@ inline std::string tokenTypeToString(TokenType type) {
         case TokenType::EOF_TOKEN:   return "EOF_TOKEN";
         case TokenType::WHILE_LOOP:  return "WHILE_LOOP";
         case TokenType::FOR_LOOP:    return "FOR_LOOP";
+        case TokenType::LBRACE:      return "LBRACE";
+        case TokenType::RBRACE:      return "RBRACE";
         default:                     return "UNKNOWN";
     }
 }

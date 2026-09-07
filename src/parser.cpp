@@ -71,6 +71,17 @@ std::unique_ptr<ASTNode> Parser::expression(){
 
 std::unique_ptr<ASTNode> Parser::statement(){
 
+    if (match(TokenType::LBRACE)) {
+        auto block = std::make_unique<BlockNode>();
+        while (!check(TokenType::RBRACE) && !isAtEnd()) {
+            block->addstatement(statement());
+        }
+        consume(TokenType::RBRACE, "Se esperaba un '}' al final del bloque");
+        return block;
+    }
+    
+    
+    
     if (check(TokenType::IDENTIFIER)){
         Token nameToken = advance();
 
@@ -79,10 +90,12 @@ std::unique_ptr<ASTNode> Parser::statement(){
             consume(TokenType::SEMICOLON, "Se esperaba un ';' al final de la asignacion");
             return std::make_unique<AssignmentNode>(nameToken.value, std::move(expr));
         }
+
         
         if (current > 0)current--;
 
     }
+
     throw std::runtime_error("Instruccion no reconocida en linea: " + std::to_string(peek().line));
 
 }
