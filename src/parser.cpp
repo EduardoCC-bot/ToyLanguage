@@ -60,7 +60,6 @@ std::unique_ptr<ASTNode> Parser::primary() {
 std::unique_ptr<ASTNode> Parser::expression(){
     auto left = primary();
 
-    // Si le sigue un '+' o '-', creamos un nodo de operacion binaria
     while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
         std::string op = previous().value;
         auto right = primary();
