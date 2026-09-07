@@ -4,11 +4,13 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include "Environment.h"
 
 class ASTNode {
 public:
     virtual ~ASTNode() = default;
     virtual void print(int indent = 0) const = 0;
+    virtual int eval(Environment& env) = 0;
 };
 
 
@@ -20,6 +22,10 @@ public:
     void print(int indent = 0) const override {
         std::string padding(indent * 4, ' ');
         std::cout << padding << "LiteralNode: (" << value << ")\n";
+    }
+
+    int eval(Environment& env) override {
+        return value;
     }
 };
 
@@ -33,6 +39,10 @@ public:
         std::string padding(indent * 4, ' ');
         std::cout << padding << "VariableNode: (" << name << ")\n";
     }
+
+    int eval(Environment& env) override {
+        return env.get(name);
+    }
 };
 
 
@@ -42,7 +52,7 @@ public:
     std::unique_ptr<ASTNode> value;
 
     AssignmentNode(const std::string& varName, std::unique_ptr<ASTNode> val)
-        : name(name), value(std::move(val)){}
+        : name(varName), value(std::move(val)){}
 
     void print(int indent = 0) const override {
         std::string padding(indent * 4, ' ');
@@ -50,6 +60,12 @@ public:
         if (value) {
             value->print(indent + 1);
         }
+    }
+
+    int eval(Environment& env ) override {
+        int val = value->eval(env);
+        env.set(name, val);
+        return val;
     }
 };
 
@@ -68,6 +84,14 @@ public:
             stmt->print(indent + 1);
         }
     }
+
+    int eval(Environment& env) override {  
+        int lastVal = 0;
+        for (const auto& stmt : statements) {
+            lastVal = stmt->eval(env);
+        }
+        return lastVal;
+    }
 };
 
 class BinaryOpNode : public ASTNode {
@@ -85,4 +109,14 @@ public:
             if (left) left->print(indent + 1);
             if (right) right->print(indent + 1);
         }
+
+    int eval(Environment& env) override {
+        int leftVal = left->eval(env);
+        int rightVal = right->eval(env);
+
+        if (op == "+") return leftVal + rightVal;
+        if (op == "-") return leftVal - rightVal;
+
+        throw std::runtime_error("Operador desconocido: " + op);
+    }
 };

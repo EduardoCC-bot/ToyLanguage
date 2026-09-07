@@ -79,8 +79,8 @@ std::unique_ptr<ASTNode> Parser::statement(){
             consume(TokenType::SEMICOLON, "Se esperaba un ';' al final de la asignacion");
             return std::make_unique<AssignmentNode>(nameToken.value, std::move(expr));
         }
-
-        current--;
+        
+        if (current > 0)current--;
 
     }
     throw std::runtime_error("Instruccion no reconocida en linea: " + std::to_string(peek().line));
