@@ -18,5 +18,15 @@ The goal of this project is to implement a complete front-end and execution envi
 
 ## Pipeline & Components
 
-```text
 Source Code  ->  Lexer  ->  Tokens  ->  Parser  ->  AST  ->  Interpreter / Environment
+
+## Building and Running
+
+### Prerequisites 
+  GCC C++ Compiler (g++) with C++17 support.
+
+### Compilation
+  g++ -Wall -Wextra -Iinclude src/*.cpp -o main.exe
+
+### Execution
+  .\main.exe
